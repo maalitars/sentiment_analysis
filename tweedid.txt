@@ -1,4 +1,3 @@
-﻿"Topic","Sentiment","TweetId","TweetDate","TweetText"
 "apple","positive","126415614616154112","Tue Oct 18 21:53:25 +0000 2011","Now all @Apple has to do is get swype on the iphone and it will be crack. Iphone that is"
 "apple","positive","126404574230740992","Tue Oct 18 21:09:33 +0000 2011","@Apple will be adding more carrier support to the iPhone 4S (just announced)"
 "apple","positive","126402758403305474","Tue Oct 18 21:02:20 +0000 2011","Hilarious @youtube video - guy does a duet with @apple 's Siri. Pretty much sums up the love affair! http://t.co/8ExbnQjY"
