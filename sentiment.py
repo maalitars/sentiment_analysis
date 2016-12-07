@@ -38,3 +38,18 @@ def testimine():
 def main():
 
     print("jou")
+
+
+from collections import defaultdict
+
+def tweedid_sõnastikku(fail):
+    f = open(fail, encoding='UTF-8')
+    sõnastik = defaultdict(list)
+
+    for rida in f:
+        rida = rida.strip()
+        lahku = rida.split('","')  # praegu on esimesel sõnal ees jutumärk ja tweedi lõpus on üks jutumärk"
+        sõnastik[lahku[1]].append(lahku[-1])
+    sõnastik = sõnastik.items()
+    return sõnastik
+
