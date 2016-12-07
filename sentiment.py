@@ -41,15 +41,36 @@ def main():
 
 
 from collections import defaultdict
+from random import shuffle
 
+def fail_segamini(fail):
+    f = open(fail,encoding='UTF-8')
+    read = []
+    for rida in f:
+        read.append(rida)
+    shuffle(read)
+    g = open('tweedid_segamini.txt', 'w', encoding='UTF8')
+
+    for i in read:
+        g.write(i)
+    return
 def tweedid_sõnastikku(fail):
-    f = open(fail, encoding='UTF-8')
+    f = open(fail,encoding='UTF-8')
     sõnastik = defaultdict(list)
-
     for rida in f:
         rida = rida.strip()
-        lahku = rida.split('","')  # praegu on esimesel sõnal ees jutumärk ja tweedi lõpus on üks jutumärk"
+        lahku = rida.split('","') #praegu on esimesel sõnal ees jutumärk ja tweedi lõpus on üks jutumärk"
         sõnastik[lahku[1]].append(lahku[-1])
+    f.close()
     sõnastik = sõnastik.items()
     return sõnastik
+#sagedus
+#def sagedus(meeleolu, sõnastik):
+
+
+
+
+#võtmed eraldi(4)
+#def tweet_sõneks(võti):
+   # return
 
