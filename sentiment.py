@@ -56,25 +56,28 @@ def fail_segamini(fail):
 
 def tweedid_sõnastikku(fail):
     f = open(fail,encoding='UTF-8')
-    sõnastik = defaultdict(list)
+    treenimissõnastik = defaultdict(list)
     i = 0
     for rida in f:
         i +=1
         if i == 4501:
             break
         rida = rida.strip()
-        lahku = rida.split('","') #praegu on esimesel sõnal ees jutumärk ja tweedi lõpus on üks jutumärk"
-        print(lahku)
-        sõnastik[lahku[1]].append(lahku[-1])
-
+        lahku = rida.split('","')  # praegu on esimesel sõnal ees jutumärk ja tweedi lõpus on üks jutumärk"
+        treenimissõnastik[lahku[1]].append(lahku[-1])
     f.close()
-    sõnastik = sõnastik.items()
-    return sõnastik
-print(tweedid_sõnastikku('tweedid_segamini.txt'))
-#sagedus
-#def sagedus(meeleolu, sõnastik):
+    #treenimissõnastik = treenimissõnastik.items()
+    return treenimissõnastik
 
+treenimissõnastik = tweedid_sõnastikku('tweedid_segamini.txt')
 
+def sagedus (sõnastik, meeleolu):
+    meeleolu = len(sõnastik[meeleolu])
+    return meeleolu
+print(sagedus(treenimissõnastik, 'positive'))
+print(sagedus(treenimissõnastik, 'negative'))
+print(sagedus(treenimissõnastik, 'irrelevant'))
+print(sagedus(treenimissõnastik, 'neutral'))
 
 
 #võtmed eraldi(4)
