@@ -71,16 +71,32 @@ def tweedid_sõnastikku(fail):
 
 treenimissõnastik = tweedid_sõnastikku('tweedid_segamini.txt')
 
-def sagedus (sõnastik, meeleolu):
+def sagedus (sõnastik, meeleolu): #meeleolud: positive, negative, irrelevant, neutral
     meeleolu = len(sõnastik[meeleolu])
     return meeleolu
-print(sagedus(treenimissõnastik, 'positive'))
-print(sagedus(treenimissõnastik, 'negative'))
-print(sagedus(treenimissõnastik, 'irrelevant'))
-print(sagedus(treenimissõnastik, 'neutral'))
+#print(sagedus(treenimissõnastik, 'positive'))
+#print(sagedus(treenimissõnastik, 'negative'))
+#print(sagedus(treenimissõnastik, 'irrelevant'))
+#print(sagedus(treenimissõnastik, 'neutral'))
 
 
-#võtmed eraldi(4)
-#def tweet_sõneks(võti):
-   # return
+def sonesta(tweedid):
+    sonestatud = []
+    for i in tweedid:
+        sonestatud.append(i.split(' '))
+    return sonestatud
+sonestatud = (sonesta(treenimissõnastik['positive']))
 
+def grammid(tweet):
+    bigrammid = []
+    kolmgrammid = []
+    neligrammid = []
+    for a in range(len(tweet)):
+        for i in range(len(tweet[a])-1):
+            bigrammid.append((tweet[a][i], tweet[a][i+1]))
+        for i in range(len(tweet[a]) - 2):
+            kolmgrammid.append((tweet[a][i], tweet[a][i + 1], tweet[a][i + 2]))
+        for i in range(len(tweet[a]) - 3):
+            neligrammid.append((tweet[a][i], tweet[a][i + 1], tweet[a][i + 2], tweet[a][i+3]))
+    return bigrammid, kolmgrammid, neligrammid
+print(grammid(sonestatud))
