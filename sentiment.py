@@ -54,9 +54,9 @@ def fail_segamini(fail):
         g.write(i)
     return
 
-def tweedid_sõnastikku(fail):
+def tweedid_sonastikku(fail):
     f = open(fail,encoding='UTF-8')
-    treenimissõnastik = defaultdict(list)
+    treenimissonastik = defaultdict(list)
     i = 0
     for rida in f:
         i +=1
@@ -64,53 +64,52 @@ def tweedid_sõnastikku(fail):
             break
         rida = rida.strip()
         lahku = rida.split('","')  # praegu on esimesel sõnal ees jutumärk ja tweedi lõpus on üks jutumärk"
-        treenimissõnastik[lahku[1]].append(lahku[-1])
+        treenimissonastik[lahku[1]].append(lahku[-1])
     f.close()
-    return treenimissõnastik
+    return treenimissonastik
 
-def sagedus (sõnastik, meeleolu): #meeleolud: positive, negative, irrelevant, neutral
-    meeleolu = len(sõnastik[meeleolu])
+def sagedus (sonastik, meeleolu): #meeleolud: positive, negative, irrelevant, neutral
+    meeleolu = len(sonastik[meeleolu])
     return meeleolu
 
 def sonesta(tweedid):
     sonestatud = []
     for i in tweedid:
-        i = i.split(' ')
-        i[-1] = i[-1].replace('"', '')
-        sonestatud.append(i)
+        sonestatud.append(i.split(' ')[:-1])
     return sonestatud
 
 def ngrammid(tweet):
-    üksgrammid = []
+    yksgrammid = []
     bigrammid = []
     kolmgrammid = []
     neligrammid = []
     for a in range(len(tweet)):
         for i in range(len(tweet[a])):
-            üksgrammid.append((tweet[a][i]))
+            yksgrammid.append((tweet[a][i]))
         for i in range(len(tweet[a])-1):
             bigrammid.append((tweet[a][i], tweet[a][i+1]))
         for i in range(len(tweet[a]) - 2):
             kolmgrammid.append((tweet[a][i], tweet[a][i + 1], tweet[a][i + 2]))
         for i in range(len(tweet[a]) - 3):
             neligrammid.append((tweet[a][i], tweet[a][i + 1], tweet[a][i + 2], tweet[a][i+3]))
-    return üksgrammid, bigrammid, kolmgrammid, neligrammid
+    return yksgrammid, bigrammid, kolmgrammid, neligrammid
 
-treenimissõnastik = tweedid_sõnastikku('tweedid_segamini.txt')
-positiivsed_sonestatud = (sonesta(treenimissõnastik['positive']))
-negatiivsed_sonestatud = (sonesta(treenimissõnastik['negative']))
-neutraalsed_sonestatud = (sonesta(treenimissõnastik['neutral']))
-irrelevant_sonestatud = (sonesta(treenimissõnastik['irrelevant']))
+treenimissonastik = tweedid_sonastikku('tweedid_segamini.txt')
+positiivsed_sonestatud = (sonesta(treenimissonastik['positive']))
+negatiivsed_sonestatud = (sonesta(treenimissonastik['negative']))
+neutraalsed_sonestatud = (sonesta(treenimissonastik['neutral']))
+irrelevant_sonestatud = (sonesta(treenimissonastik['irrelevant']))
 
-def sõnastikku(meeleolu):
-    sõnastik = defaultdict(list)
-    sõnastik['üksgrammid'] = Counter(ngrammid(meeleolu)[0]).most_common(50)
-    sõnastik['kaksgrammid'] = Counter(ngrammid(meeleolu)[1]).most_common(50)
-    sõnastik['kolmgrammid'] = Counter(ngrammid(meeleolu)[2]).most_common(20)
-    sõnastik['neligrammid'] = Counter(ngrammid(meeleolu)[3]).most_common(10)
-    return  sõnastik
-positiivsed_sagedused = sõnastikku(positiivsed_sonestatud)
-negatiivsed_sagedused = sõnastikku(negatiivsed_sonestatud)
-neutraalsed_sagedused = sõnastikku(neutraalsed_sonestatud)
-irrelevant_sagedused = sõnastikku(irrelevant_sonestatud)
-print(irrelevant_sagedused)
+def sonastikku(meeleolu):
+    sonastik = defaultdict(list)
+    sonastik['yksgrammid'] = Counter(ngrammid(meeleolu)[0]).most_common(50)
+    sonastik['kaksgrammid'] = Counter(ngrammid(meeleolu)[1]).most_common(50)
+    sonastik['kolmgrammid'] = Counter(ngrammid(meeleolu)[2]).most_common(20)
+    sonastik['neligrammid'] = Counter(ngrammid(meeleolu)[3]).most_common(10)
+    return  sonastik
+positiivsed_sagedused = sonastikku(positiivsed_sonestatud)
+negatiivsed_sagedused = sonastikku(negatiivsed_sonestatud)
+neutraalsed_sagedused = sonastikku(neutraalsed_sonestatud)
+irrelevant_sagedused = sonastikku(irrelevant_sonestatud)
+
+#teha unikaalsed
