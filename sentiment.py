@@ -151,7 +151,6 @@ negatiivsed = otsime_sagedused(negatiivsed_sagedused,negatiivsed)
 neutraalsed = otsime_sagedused(neutraalsed_sagedused,neutraalsed)
 irrelevant = otsime_sagedused(irrelevant_sagedused, irrelevant)
 
-#liidame kokku ja siis võtame for i ja jagame sellega selle summaga kõik...
 def kaalude_summa(unikaalsed_sonastik):
     summa_1 = 0
     summa_2 = 0
@@ -171,11 +170,15 @@ def kaalud (unikaalsed_sonastik, summa, gramm):
         sõna = i[0]
         kaal = round(i[1]/summa,2)
         i[1] = kaal
-
     return unikaalsed_sonastik
 
-kaalud(positiivsed, kaalude_summa(positiivsed)[0],'yksgrammid')
-kaalud(positiivsed, kaalude_summa(positiivsed)[1],'kaksgrammid')
-kaalud(positiivsed, kaalude_summa(positiivsed)[2],'kolmgrammid')
-kaalud(positiivsed, kaalude_summa(positiivsed)[3],'neligrammid')
-print(positiivsed)
+def sonastiku_muutmine(sonastik):
+    kaalud(sonastik, kaalude_summa(sonastik)[0], 'yksgrammid')
+    kaalud(sonastik, kaalude_summa(sonastik)[1], 'kaksgrammid')
+    kaalud(sonastik, kaalude_summa(sonastik)[2], 'kolmgrammid')
+    kaalud(sonastik, kaalude_summa(sonastik)[3], 'neligrammid')
+    return sonastik
+positiivsed_kaaludega = sonastiku_muutmine(positiivsed)
+negatiivsed_kaaludega = sonastiku_muutmine(negatiivsed)
+neutraalse_kaaludega = sonastiku_muutmine(neutraalsed)
+irrelevant_kaaludega = sonastiku_muutmine(irrelevant)
