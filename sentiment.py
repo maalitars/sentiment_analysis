@@ -112,4 +112,20 @@ negatiivsed_sagedused = sonastikku(negatiivsed_sonestatud)
 neutraalsed_sagedused = sonastikku(neutraalsed_sonestatud)
 irrelevant_sagedused = sonastikku(irrelevant_sonestatud)
 
-#teha unikaalsed
+def sonastik_hulgaks(sagedused):
+    hulk = set()
+    for i in sagedused:
+        for a in sagedused[i]:
+            hulk.add(a[0])
+    return hulk
+
+positiivsed_hulk = (sonastik_hulgaks(positiivsed_sagedused))
+negatiivsed_hulk = (sonastik_hulgaks(negatiivsed_sagedused))
+neutraalsed_hulk = (sonastik_hulgaks(neutraalsed_sagedused))
+irrelevant_hulk = (sonastik_hulgaks(irrelevant_sagedused))
+
+positiivsed = ((positiivsed_hulk -negatiivsed_hulk) - neutraalsed_hulk) - irrelevant_hulk
+negatiivsed = ((negatiivsed_hulk -positiivsed_hulk) - neutraalsed_hulk) - irrelevant_hulk
+neutraalsed = ((neutraalsed_hulk- negatiivsed_hulk)-positiivsed_hulk)- irrelevant_hulk
+irrelevant = ((irrelevant_hulk- negatiivsed_hulk)- positiivsed_hulk)-neutraalsed_hulk
+
