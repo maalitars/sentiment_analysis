@@ -170,6 +170,7 @@ def kaalud (unikaalsed_sonastik, summa, gramm):
         sõna = i[0]
         kaal = round(i[1]/summa,2)
         i[1] = kaal
+
     return unikaalsed_sonastik
 
 def sonastiku_muutmine(sonastik):
