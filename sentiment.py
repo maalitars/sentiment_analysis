@@ -102,8 +102,8 @@ def sonastikku(meeleolu):
     sonastik = defaultdict(list)
     sonastik['yksgrammid'] = list(Counter(ngrammid(meeleolu)[0]).most_common(50))
     sonastik['kaksgrammid'] = list(Counter(ngrammid(meeleolu)[1]).most_common(50))
-    sonastik['kolmgrammid'] = list(Counter(ngrammid(meeleolu)[2]).most_common(30))
-    sonastik['neligrammid'] = list(Counter(ngrammid(meeleolu)[3]).most_common(20))
+    sonastik['kolmgrammid'] = list(Counter(ngrammid(meeleolu)[2]).most_common(20))
+    sonastik['neligrammid'] = list(Counter(ngrammid(meeleolu)[3]).most_common(10))
     return  sonastik
 
 def listiks (sagedustega_ennikud):
@@ -180,8 +180,17 @@ def määramine(yks_tweet,kaal):
         for d in a:
             for b in kaal:
                 for c in kaal[b]:
-                    if d in c:
-                        summa += c[1]
+                    if d in c and b == 'yksgrammid':
+                        summa += 1
+                    if d in c and b == 'kaksgrammid':
+                        summa += 2
+
+                    if d in c and b == 'kolmgrammid':
+                        summa += 3
+
+                    if d in c and b == 'neligramid':
+                        summa += 4
+
     return summa
 
 def määra(väärtused):
@@ -189,7 +198,7 @@ def määra(väärtused):
     maksimum = max(väärtused)
     meeleolu = meeleolud[väärtused.index(maksimum)]
     väärtused.remove(maksimum)
-    if maksimum-väärtused[0] >= 0.1 and maksimum-väärtused[1] >= 0.1 and maksimum-väärtused[2] >= 0.1:
+    if maksimum-väärtused[0] >= 3 and maksimum-väärtused[1] >= 3 and maksimum-väärtused[2] >= 3:
         return meeleolu
     else:
         return '-'
@@ -198,7 +207,7 @@ def määra(väärtused):
 
 def tweetide_väärtused(sonastik):
 
-    for i in range(len(positiivsed_sonestatud_dev)):
+    for i in range(len(sonastik)):
         väärtused =[]
         väärtused.append(määramine(sonastik[i], positiivsed_kaaludega))
         väärtused.append(määramine(sonastik[i], negatiivsed_kaaludega))
@@ -258,5 +267,4 @@ print('peaksid olema neutraalsed')
 (tweetide_väärtused(neutraalsed_sonestatud_dev))
 print('\n')
 print('peaksid olema irrelevant')
-
 (tweetide_väärtused(irrelevant_sonestatud_dev))
