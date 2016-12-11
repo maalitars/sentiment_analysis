@@ -102,8 +102,8 @@ def sonastikku(meeleolu):
     sonastik = defaultdict(list)
     sonastik['yksgrammid'] = list(Counter(ngrammid(meeleolu)[0]).most_common(50))
     sonastik['kaksgrammid'] = list(Counter(ngrammid(meeleolu)[1]).most_common(50))
-    sonastik['kolmgrammid'] = list(Counter(ngrammid(meeleolu)[2]).most_common(30))
-    sonastik['neligrammid'] = list(Counter(ngrammid(meeleolu)[3]).most_common(20))
+    sonastik['kolmgrammid'] = list(Counter(ngrammid(meeleolu)[2]).most_common(20))
+    sonastik['neligrammid'] = list(Counter(ngrammid(meeleolu)[3]).most_common(10))
     return  sonastik
 
 def listiks (sagedustega_ennikud):
@@ -189,7 +189,7 @@ def määra(väärtused):
     maksimum = max(väärtused)
     meeleolu = meeleolud[väärtused.index(maksimum)]
     väärtused.remove(maksimum)
-    if maksimum-väärtused[0] >= 0.1 and maksimum-väärtused[1] >= 0.1 and maksimum-väärtused[2] >= 0.1:
+    if maksimum-väärtused[0] >= 0.3 and maksimum-väärtused[1] >= 0.3 and maksimum-väärtused[2] >= 0.3:
         return meeleolu
     else:
         return '-'
