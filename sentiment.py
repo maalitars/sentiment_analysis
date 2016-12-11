@@ -192,29 +192,38 @@ def määramine(yks_tweet,kaal):
                         summa += 4
 
     return summa
+'''
+def määramine(yks_tweet,kaal):
+    summa = 0
+    tweet_grammidena = yks_ngrammiks(yks_tweet)
+    for a in tweet_grammidena:
+        for d in a:
+            for b in kaal:
+                for c in kaal[b]:
+                    if d in c:
+                        summa += c[1]
+    return summa
 
+'''
 def määra(väärtused):
     meeleolud=['positiivne','negatiivne','neutraalne','irrelevant']
     maksimum = max(väärtused)
     meeleolu = meeleolud[väärtused.index(maksimum)]
     väärtused.remove(maksimum)
-    if maksimum-väärtused[0] >= 3 and maksimum-väärtused[1] >= 3 and maksimum-väärtused[2] >= 3:
-        return meeleolu
-    else:
-        return '-'
+    #if maksimum-väärtused[0] >= 1 and maksimum-väärtused[1] >= 1 and maksimum-väärtused[2] >= 1:
+    return meeleolu
+    #else:
+    #    return '-'
 
 
 
-def tweetide_väärtused(sonastik):
-
-    for i in range(len(sonastik)):
+def tweetide_väärtused(sonastik, i):
         väärtused =[]
         väärtused.append(määramine(sonastik[i], positiivsed_kaaludega))
         väärtused.append(määramine(sonastik[i], negatiivsed_kaaludega))
         väärtused.append(määramine(sonastik[i], neutraalse_kaaludega))
         väärtused.append(määramine(sonastik[i], irrelevant_kaaludega))
-        print(määra(väärtused))
-
+        return määra(väärtused)
 
 treenimissonastik = tweedid_sonastikku('tweedid_segamini.txt')[0]
 devsonastik = tweedid_sonastikku('tweedid_segamini.txt')[1]
@@ -255,16 +264,29 @@ negatiivsed_kaaludega = sonastiku_muutmine(negatiivsed)
 neutraalse_kaaludega = sonastiku_muutmine(neutraalsed)
 irrelevant_kaaludega = sonastiku_muutmine(irrelevant)
 
-print('peaksid olema positiivsed')
-(tweetide_väärtused(positiivsed_sonestatud_dev))
-print('\n')
-print('peaksid olema negatiivsed')
+#print('peaksid olema positiivsed')
+#(tweetide_väärtused(positiivsed_sonestatud_dev))
+#print('\n')
+#print('peaksid olema negatiivsed')
 
-(tweetide_väärtused(negatiivsed_sonestatud_dev))
-print('\n')
-print('peaksid olema neutraalsed')
+#(tweetide_väärtused(negatiivsed_sonestatud_dev))
+#print('\n')
+#print('peaksid olema neutraalsed')
+def silumine(yks_tweet,kaal):
+    tweet_grammidena = yks_ngrammiks(yks_tweet)
+    for a in tweet_grammidena:
+        for d in a:
+            for b in kaal:
+                for c in kaal[b]:
+                    if d in c:
+                        print(kaal[b])
+    return kaal
+for i in range(len(neutraalsed_sonestatud_dev)):
+     määratud = (tweetide_väärtused(neutraalsed_sonestatud_dev,i))
+     if määratud != 'neutraalne' and määratud != '-':
+         uus_sonastik = silumine(neutraalsed_sonestatud_dev[i], neutraalse_kaaludega)
 
-(tweetide_väärtused(neutraalsed_sonestatud_dev))
-print('\n')
-print('peaksid olema irrelevant')
-(tweetide_väärtused(irrelevant_sonestatud_dev))
+         (neutraalsed_sonestatud_dev[i])
+#print('\n')
+#print('peaksid olema irrelevant')
+#(tweetide_väärtused(irrelevant_sonestatud_dev))
