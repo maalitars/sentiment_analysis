@@ -198,7 +198,7 @@ def määra(väärtused):
 
 def tweetide_väärtused(sonastik):
 
-    for i in range(len(positiivsed_sonestatud_dev)):
+    for i in range(len(sonastik)):
         väärtused =[]
         väärtused.append(määramine(sonastik[i], positiivsed_kaaludega))
         väärtused.append(määramine(sonastik[i], negatiivsed_kaaludega))
