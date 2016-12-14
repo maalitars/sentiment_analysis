@@ -311,10 +311,10 @@ print('positiivsed 5 korda silutud')
 maaramine(positiivsed_sonestatud_dev, 'positiivne')
 print('negatiivsed 5 korda silutud')
 
-maaramine(negatiivsed_sonestatud_dev, ' negatiivsed')
+maaramine(negatiivsed_sonestatud_dev, 'negatiivsed')
 print('neutraalsed 5 korda silutud')
 
-maaramine(neutraalsed_sonestatud_dev, ' neutraalsed')
+maaramine(neutraalsed_sonestatud_dev, 'neutraalsed')
 print('irrelevandid 5 korda silutud')
 
-maaramine(irrelevant_sonestatud_dev, ' irrelevant')
+maaramine(irrelevant_sonestatud_dev, 'irrelevant')
