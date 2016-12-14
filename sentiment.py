@@ -203,7 +203,6 @@ def valed_tweedid(meeleolu_sonastatud_dev, meeleolu):
                 for i in range(len(a)):
                     valesti_tweedid.append(a[i])
     return valesti_tweedid
-
 def valede_tweetide_eemaldamine(meeleolu_sonestatud_dev, meeleolu, meeleolu_sonastik):
     all_tweets = valed_tweedid(meeleolu_sonestatud_dev,meeleolu)
     valede_tweetide_grammid = []
@@ -213,11 +212,8 @@ def valede_tweetide_eemaldamine(meeleolu_sonestatud_dev, meeleolu, meeleolu_sona
                 if gramm in element:
                     valede_tweetide_grammid.append(gramm)
     return valede_tweetide_grammid
-
-
 def most_common(list_ngrammidega):
     a = 0
-
     for element in list_ngrammidega:
         mitu = list_ngrammidega.count(element)
         if mitu > a:
@@ -228,13 +224,11 @@ def most_common(list_ngrammidega):
     except:
         return
     return enim
-
 def eemaldamine(meeleolu_element,sonastik_grammidega):
         for voti in sonastik_grammidega:
             for a in sonastik_grammidega[voti]:
                 if meeleolu_element in a :
                     sonastik_grammidega[voti].remove(a)
-
         return sonastik_grammidega
 
 
@@ -250,23 +244,22 @@ def silumine(meeleolu_sonastatud_dev, meeleolu):
         eemaldamine(s,neutraalsed)
     if meeleolu != 'irrelevant':
         s = most_common(valede_tweetide_eemaldamine(meeleolu_sonastatud_dev, meeleolu, irrelevant))
-
         eemaldamine(s,irrelevant)
-    return meeleolu_sonastatud_dev
+    return
 
 def maaramine(meeleolu_sonastatud_dev, meeleolu,meeleolu_sonastik):
-    for i in range(10):
-        a=0
-        b=0
-        for i in range(len(meeleolu_sonastatud_dev)):
-            määratud = tweetide_väärtused(meeleolu_sonastatud_dev, i)
-            if määratud != meeleolu and määratud != 'Meie parameetritega seda lauset kahjuks määrata ei saa.':
-                a +=1
-            if määratud == meeleolu:
-                b +=1
-                moju_suurendamine(meeleolu_sonastatud_dev[i],meeleolu_sonastik)
-        print('Valesti',a, 'väljaarvatud need, mida ei oska ta määrata ja määras õigesti',b)
-        silumine(meeleolu_sonastatud_dev, meeleolu)
+    a=0
+    b=0
+    for i in range(len(meeleolu_sonastatud_dev)):
+        määratud = tweetide_väärtused(meeleolu_sonastatud_dev, i)
+        if määratud != meeleolu and määratud != 'Meie parameetritega seda lauset kahjuks määrata ei saa.':
+            a +=1
+        if määratud == meeleolu:
+            b +=1
+            moju_suurendamine(meeleolu_sonastatud_dev[i],meeleolu_sonastik)
+    #print('Valesti',a, 'väljaarvatud need, mida ei oska ta määrata ja määras õigesti',b)
+    silumine(meeleolu_sonastatud_dev, meeleolu)
+    return
 
 treenimissonastik = tweedid_sonastikku('tweedid_segamini.txt')[0]
 devsonastik = tweedid_sonastikku('tweedid_segamini.txt')[1]
@@ -281,6 +274,12 @@ positiivsed_sonestatud_dev = (sonesta(devsonastik['positive']))
 negatiivsed_sonestatud_dev = (sonesta(devsonastik['negative']))
 neutraalsed_sonestatud_dev = (sonesta(devsonastik['neutral']))
 irrelevant_sonestatud_dev = (sonesta(devsonastik['negative']))
+
+positiivsed_sonestatud_test = (sonesta(testsonastik['positive']))
+negatiivsed_sonestatud_test = (sonesta(testsonastik['negative']))
+neutraalsed_sonestatud_test = (sonesta(testsonastik['neutral']))
+irrelevant_sonestatud_test = (sonesta(testsonastik['irrelevant']))
+
 
 positiivsed_sagedused = listiks(sonastikku(positiivsed_sonestatud))
 negatiivsed_sagedused = listiks(sonastikku(negatiivsed_sonestatud))
@@ -313,8 +312,100 @@ neutraalsed = kaalud(neutraalsed)
 irrelevant = kaalud(irrelevant)
 
 
-maaramine(positiivsed_sonestatud_dev, 'positiivne', positiivsed)
-maaramine(negatiivsed_sonestatud_dev, 'negatiivne', negatiivsed)
-maaramine(neutraalsed_sonestatud_dev, 'neutraalne', neutraalsed)
-maaramine(irrelevant_sonestatud_dev, 'irrelevant', irrelevant)
+for i in range(10):
+    (maaramine(positiivsed_sonestatud_dev, 'positiivne', positiivsed))
+for i in range(10):
+    maaramine(negatiivsed_sonestatud_dev, 'negatiivne', negatiivsed)
+for i in range(10):
+    maaramine(neutraalsed_sonestatud_dev, 'neutraalne', neutraalsed)
+for i in range(10):
+    maaramine(irrelevant_sonestatud_dev, 'irrelevant', irrelevant)
 
+'''
+
+def sonastik_faili(meeleolu_sonastik):
+    for i in meeleolu_sonastik:
+        f.write(i)
+        f.write('\n')
+        f.write(str(meeleolu_sonastik[i]))
+        f.write('\n')
+
+
+f = open("sonastikud.txt", "w", encoding='UTF-8')
+sonastik_faili(positiivsed)
+sonastik_faili(negatiivsed)
+sonastik_faili(neutraalsed)
+sonastik_faili(irrelevant)
+f.close()
+
+
+def sonastik_failist():
+    f=open("sonastikud.txt", encoding="UTF-8")
+    positiivsed = defaultdict(list)
+    negatiivsed = defaultdict(list)
+    neutraalsed = defaultdict(list)
+    irrelevant = defaultdict(list)
+    read = f.readlines()
+    f.close()
+    for rida in range(len(read),2):
+        if rida < 7:
+            positiivsed[read[rida].strip()].append(read[rida+1].strip())
+        if rida > 7 and rida < 15:
+            negatiivsed[read[rida].strip()].append(read[rida+1].strip())
+        if rida > 15 and rida < 23:
+            neutraalsed[read[rida].strip()].append(read[rida+1].strip())
+        if rida >23:
+            irrelevant[read[rida].strip()].append(read[rida+1].strip())
+    return positiivsed, negatiivsed,neutraalsed,irrelevant
+
+positiivsed = sonastik_failist()[0]
+negatiivsed = sonastik_failist()[1]
+neutraalsed = sonastik_failist()[2]
+irrelevant = sonastik_failist()[3]
+'''
+def testimine(meeleolu_sonestatud_test, meeleolu):
+    oigesti_määratud = 0
+    valesti_määratud = 0
+    for i in range(len(meeleolu_sonestatud_test)):
+        määratud = tweetide_väärtused(meeleolu_sonestatud_test, i)
+        if määratud == meeleolu:
+            oigesti_määratud+=1
+        else:
+            valesti_määratud+=1
+    return oigesti_määratud, valesti_määratud
+
+positiivsed_oiged = testimine(positiivsed_sonestatud_test,'positiivne')[0]
+positiivsed_koik = positiivsed_oiged + testimine(negatiivsed_sonestatud_test,'positiivne')[0] + testimine(neutraalsed_sonestatud_test,'positiivne')[0] + testimine(irrelevant_sonestatud_test, 'positiivne')[0]
+positiivsed_valed = testimine(positiivsed_sonestatud_test,'positiivne')[1]
+
+negatiivsed_oiged = testimine(negatiivsed_sonestatud_test,'negatiivne')[0]
+negatiivsed_koik = negatiivsed_oiged + testimine(positiivsed_sonestatud_test,'negatiivne')[0] + testimine(neutraalsed_sonestatud_test,'negatiivne')[0] + testimine(irrelevant_sonestatud_test,'negatiivne')[0]
+negatiivsed_valed = testimine(negatiivsed_sonestatud_test,'negatiivne')[1]
+
+neutraalsed_oiged = testimine(neutraalsed_sonestatud_test, 'neutraalne')[0]
+neutraalsed_koik = neutraalsed_oiged + testimine(positiivsed_sonestatud_test,'neutraalne')[0] + testimine(negatiivsed_sonestatud_test, 'neutraalne')[0]+testimine(irrelevant_sonestatud_test,'neutraalne')[0]
+neutraalsed_valed = testimine(neutraalsed_sonestatud_test,'neutraalne')[1]
+
+irrelevant_oiged = testimine(irrelevant_sonestatud_test,'irrelevant')[0]
+irrelevant_koik = irrelevant_oiged + testimine(positiivsed_sonestatud_test,'irrelevant')[0]+testimine(negatiivsed_sonestatud_test, 'irrelevant')[0]+ testimine(neutraalsed_sonestatud_test, 'irrelevant')[0]
+irrelevant_valed = testimine(neutraalsed_sonestatud_test,'irrelevant')[1]
+
+print(positiivsed_oiged)
+print(positiivsed_koik)
+print(positiivsed_valed)
+
+def arvutamine(oiged, koik, valed):
+    precision = oiged/koik
+    recall = oiged/(oiged + valed)
+    tulemus = (2*((precision*recall)/(precision+recall)))*100
+    return 'Meie programm määrab',tulemus,'protsendilise täpsusega'
+pos = arvutamine(positiivsed_oiged,positiivsed_koik,positiivsed_valed)
+neg = arvutamine(negatiivsed_oiged,negatiivsed_koik,negatiivsed_valed)
+neu = arvutamine(neutraalsed_oiged,neutraalsed_koik,neutraalsed_valed)
+irr = arvutamine(irrelevant_oiged,irrelevant_koik,irrelevant_valed)
+print(pos,neg,neu,irr)
+
+test = [[]]
+lause = input('Sisesta palun lause, mille meelsust soovid teada(inglise keeles): ')
+test.append(lause)
+print(tweetide_väärtused())
