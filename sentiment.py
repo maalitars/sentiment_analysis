@@ -39,7 +39,6 @@ def main():
 
     print("jou")
 
-
 from collections import defaultdict,Counter
 from random import shuffle
 def fail_segamini(fail):
@@ -241,15 +240,16 @@ def moju_suurendamine(õigesti_määratud_tweet,sonastik_grammidega):
                     if d in c:
                         c[1] +=0.5
     return sonastik_grammidega
-def valed_tweedid(meeleolu_sonastatud_dev, valesti_tweedid_tyhilist, meeleolu):
+def valed_tweedid(meeleolu_sonastatud_dev, meeleolu):
+    valesti_tweedid = []
     for i in range(len(meeleolu_sonastatud_dev)):
         määratud = tweetide_väärtused(meeleolu_sonastatud_dev,i)
         if määratud != meeleolu:
             valesti = yks_ngrammiks(meeleolu_sonastatud_dev[i])
             for a in valesti:
                 for i in range(len(a)):
-                    valesti_tweedid_tyhilist.append(a[i])
-    return valesti_tweedid_tyhilist
+                    valesti_tweedid.append(a[i])
+    return valesti_tweedid
 
 treenimissonastik = tweedid_sonastikku('tweedid_segamini.txt')[0]
 devsonastik = tweedid_sonastikku('tweedid_segamini.txt')[1]
@@ -295,9 +295,8 @@ negatiivsed = kaalud(negatiivsed)
 neutraalsed = kaalud(neutraalsed)
 irrelevant = kaalud(irrelevant)
 
-valesti_tweedid = []
-def valede_tweetide_eemaldamine(meeleolu_sonestatud_dev, valesti_tweedid, meeleolu, meeleolu_sonastik):
-    all_tweets = valed_tweedid(meeleolu_sonestatud_dev,valesti_tweedid,meeleolu)
+def valede_tweetide_eemaldamine(meeleolu_sonestatud_dev, meeleolu, meeleolu_sonastik):
+    all_tweets = valed_tweedid(meeleolu_sonestatud_dev,meeleolu)
     valede_tweetide_grammid = []
     for gramm in all_tweets:
         for voti in meeleolu_sonastik:
@@ -307,7 +306,38 @@ def valede_tweetide_eemaldamine(meeleolu_sonestatud_dev, valesti_tweedid, meeleo
     return valede_tweetide_grammid
 
 
-print(valede_tweetide_eemaldamine(positiivsed_sonestatud_dev,valesti_tweedid,'positiivne',positiivsed))
-print(valede_tweetide_eemaldamine(positiivsed_sonestatud_dev,valesti_tweedid,'positiivne',negatiivsed))
-print(valede_tweetide_eemaldamine(positiivsed_sonestatud_dev,valesti_tweedid,'positiivne',neutraalsed))
-print(valede_tweetide_eemaldamine(positiivsed_sonestatud_dev,valesti_tweedid,'positiivne',irrelevant))
+print(valede_tweetide_eemaldamine(positiivsed_sonestatud_dev,'positiivne',positiivsed))
+print(valede_tweetide_eemaldamine(positiivsed_sonestatud_dev,'positiivne',negatiivsed))
+print(valede_tweetide_eemaldamine(positiivsed_sonestatud_dev,'positiivne',neutraalsed))
+print(valede_tweetide_eemaldamine(positiivsed_sonestatud_dev,'positiivne',irrelevant))
+def most_common(list_ngrammidega):
+    a = 0
+    for element in list_ngrammidega:
+        mitu = list_ngrammidega.count(element)
+        if mitu > a:
+            a = mitu
+            enim = element
+    list_ngrammidega.remove(enim)
+    return enim
+
+def eemaldamine(meeleolu_element,sonastik_grammidega):
+        for voti in sonastik_grammidega:
+            for a in sonastik_grammidega[voti]:
+                if meeleolu_element in a :
+                    print(meeleolu_element)
+                    sonastik_grammidega[voti].remove(a)
+
+        return sonastik_grammidega
+
+for i in range(5):
+    a= 0
+    for i in range(len(positiivsed_sonestatud_dev)):
+        määratud = (tweetide_väärtused(negatiivsed_sonestatud_dev, i))
+        print(määratud)
+        if määratud != 'positiivne' and määratud != 'Meie parameetritega seda lauset kahjuks määrata ei saa.':
+            a +=1
+    print(a)
+
+    negatiivne_enim = most_common(valede_tweetide_eemaldamine(positiivsed_sonestatud_dev,'positiivne',negatiivsed))
+    eemaldamine(negatiivne_enim, negatiivsed)
+
