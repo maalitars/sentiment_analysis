@@ -70,9 +70,9 @@ def tweedid_sonastikku(fail):
             testsonastik[lahku[1]].append(lahku[-1])
     f.close()
     return treenimissonastik, devsonastik, testsonastik
-def sagedus (sonastik, meeleolu): #meeleolud: positive, negative, irrelevant, neutral
+"""def sagedus (sonastik, meeleolu): #meeleolud: positive, negative, irrelevant, neutral
     meeleolu = len(sonastik[meeleolu])
-    return meeleolu
+    return meeleolu"""
 def sonesta(sonastik_võtmega):
     sonestatud = []
     for i in sonastik_võtmega:
@@ -120,7 +120,7 @@ def otsime_sagedused(meeleolu_sagedused, meeleolu_unikaalne_hulk):
                 if b[0] == i:
                     sagedustega[a].append(b)
     return sagedustega
-def kaalude_summa(unikaalsed_sonastik):
+'''def kaalude_summa(unikaalsed_sonastik):
     summa_1 = 0
     summa_2 = 0
     summa_3 = 0
@@ -136,16 +136,26 @@ def kaalude_summa(unikaalsed_sonastik):
     return summa_1,summa_2,summa_3,summa_4
 def kaalud (unikaalsed_sonastik, summa, gramm):
     for i in unikaalsed_sonastik[gramm]:
-        sõna = i[0]
+        #sõna = i[0]
         kaal = round(i[1]/summa,2)
         i[1] = kaal
+    return unikaalsed_sonastik'''
+def kaalud (unikaalsed_sonastik): #summa, gramm):
+    for i in unikaalsed_sonastik['yksgrammid']:
+        i[1] = 1
+    for i in unikaalsed_sonastik['kaksgrammid']:
+        i[1] = 2
+    for i in unikaalsed_sonastik['kolmgrammid']:
+        i[1] = 3
+    for i in unikaalsed_sonastik['neligrammid']:
+        i[1] = 4
     return unikaalsed_sonastik
-def sonastiku_muutmine(sonastik):
+'''def sonastiku_muutmine(sonastik):
     kaalud(sonastik, kaalude_summa(sonastik)[0], 'yksgrammid')
     kaalud(sonastik, kaalude_summa(sonastik)[1], 'kaksgrammid')
     kaalud(sonastik, kaalude_summa(sonastik)[2], 'kolmgrammid')
     kaalud(sonastik, kaalude_summa(sonastik)[3], 'neligrammid')
-    return sonastik
+    return sonastik'''
 def yks_ngrammiks(tweet):
     yksgrammid = []
     bigrammid = []
@@ -168,15 +178,13 @@ def määramine(yks_tweet,kaal):
             for b in kaal:
                 for c in kaal[b]:
                     if d in c and b == 'yksgrammid':
-                        summa += 1
+                        summa += c[1]
                     if d in c and b == 'kaksgrammid':
-                        summa += 2
-
+                        summa += c[1]
                     if d in c and b == 'kolmgrammid':
-                        summa += 3
-
+                        summa += c[1]
                     if d in c and b == 'neligramid':
-                        summa += 4
+                        summa += c[1]
 
     return summa
 '''
@@ -196,18 +204,53 @@ def määra(väärtused):
     meeleolud=['positiivne','negatiivne','neutraalne','irrelevant']
     maksimum = max(väärtused)
     meeleolu = meeleolud[väärtused.index(maksimum)]
-    väärtused.remove(maksimum)
+    if väärtused == [0,0,0,0]: return 'Meie parameetritega seda lauset kahjuks määrata ei saa.' #kui oleks väärtuste list[0,5,5,3]?
+    #väärtused.remove(maksimum)
     #if maksimum-väärtused[0] >= 1 and maksimum-väärtused[1] >= 1 and maksimum-väärtused[2] >= 1:
-    return meeleolu
+    else: return meeleolu
     #else:
     #    return '-'
-def tweetide_väärtused(sonastik, i):
-        väärtused =[]
-        väärtused.append(määramine(sonastik[i], positiivsed_kaaludega))
-        väärtused.append(määramine(sonastik[i], negatiivsed_kaaludega))
-        väärtused.append(määramine(sonastik[i], neutraalse_kaaludega))
-        väärtused.append(määramine(sonastik[i], irrelevant_kaaludega))
-        return määra(väärtused)
+def tweetide_väärtused(sonestatud_tweedid, i):
+    väärtused =[]
+    väärtused.append(määramine(sonestatud_tweedid[i], positiivsed))
+    väärtused.append(määramine(sonestatud_tweedid[i], negatiivsed))
+    väärtused.append(määramine(sonestatud_tweedid[i], neutraalsed))
+    väärtused.append(määramine(sonestatud_tweedid[i], irrelevant))
+    return määra(väärtused)
+def sagedaseim_vale_gramm(valesti_tweedid):
+    k = 0
+    vale_tweedi_gramm = ''
+    for i in valesti_tweedid:
+        ngramm = valesti_tweedid.count(i)
+        if ngramm > k:
+            k = ngramm
+            vale_tweedi_gramm = i
+    return vale_tweedi_gramm
+def silumine(vale_tweedi_gramm_mostcommon,meeleolu_grammid):
+    for voti in meeleolu_grammid:
+        for element in meeleolu_grammid[voti]:
+            if vale_tweedi_gramm_mostcommon in element:
+                meeleolu_grammid[voti].remove(vale_tweedi_gramm_mostcommon)
+        return meeleolu_grammid
+def moju_suurendamine(õigesti_määratud_tweet,sonastik_grammidega):
+    tweet_grammidena = yks_ngrammiks(õigesti_määratud_tweet)
+    for a in tweet_grammidena:
+        for d in a:
+            for b in sonastik_grammidega:
+                for c in sonastik_grammidega[b]:
+                    if d in c:
+                        c[1] +=0.5
+    return sonastik_grammidega
+def valed_tweedid(meeleolu_sonastatud_dev, valesti_tweedid_tyhilist, meeleolu):
+    for i in range(len(meeleolu_sonastatud_dev)):
+        määratud = tweetide_väärtused(meeleolu_sonastatud_dev,i)
+        if määratud != meeleolu:
+            valesti = yks_ngrammiks(meeleolu_sonastatud_dev[i])
+            for a in valesti:
+                for i in range(len(a)):
+                    valesti_tweedid_tyhilist.append(a[i])
+    return valesti_tweedid_tyhilist
+
 treenimissonastik = tweedid_sonastikku('tweedid_segamini.txt')[0]
 devsonastik = tweedid_sonastikku('tweedid_segamini.txt')[1]
 testsonastik = tweedid_sonastikku('tweedid_segamini.txt')[2]
@@ -242,92 +285,29 @@ negatiivsed = otsime_sagedused(negatiivsed_sagedused,negatiivsed)
 neutraalsed = otsime_sagedused(neutraalsed_sagedused,neutraalsed)
 irrelevant = otsime_sagedused(irrelevant_sagedused, irrelevant)
 
-positiivsed_kaaludega = sonastiku_muutmine(positiivsed)
-negatiivsed_kaaludega = sonastiku_muutmine(negatiivsed)
-neutraalse_kaaludega = sonastiku_muutmine(neutraalsed)
-irrelevant_kaaludega = sonastiku_muutmine(irrelevant)
+#positiivsed_kaaludega = sonastiku_muutmine(positiivsed)
+#negatiivsed_kaaludega = sonastiku_muutmine(negatiivsed)
+#neutraalse_kaaludega = sonastiku_muutmine(neutraalsed)
+#irrelevant_kaaludega = sonastiku_muutmine(irrelevant)
 
-def silumine(yks_tweet,kaal):
-    tweet_grammidena = yks_ngrammiks(yks_tweet)
-    for a in tweet_grammidena:
-        for d in a:
-            for b in kaal:
-                for c in kaal[b]:
-                    if d in c:
-                        kaal[b].remove(c)
-    return kaal
-def eemaldamine(meeleolu_sonastatud_dev, meeleolu_kaaludega):
-    uus_sonastik = defaultdict(list)
-    for i in range(len(meeleolu_sonastatud_dev)):
-         määratud = (tweetide_väärtused(meeleolu_sonastatud_dev,i))
-         if määratud != 'positiivne' and määratud != '-':
-             uus_sonastik = silumine(meeleolu_sonastatud_dev[i], meeleolu_kaaludega)
-    return uus_sonastik
+positiivsed = kaalud(positiivsed)
+negatiivsed = kaalud(negatiivsed)
+neutraalsed = kaalud(neutraalsed)
+irrelevant = kaalud(irrelevant)
 
-'''VAJA TEHA: def kaalu suurendamine nendel grammidel, mis määrasid õigesti.'''
+valesti_tweedid = []
+def valede_tweetide_eemaldamine(meeleolu_sonestatud_dev, valesti_tweedid, meeleolu, meeleolu_sonastik):
+    all_tweets = valed_tweedid(meeleolu_sonestatud_dev,valesti_tweedid,meeleolu)
+    valede_tweetide_grammid = []
+    for gramm in all_tweets:
+        for voti in meeleolu_sonastik:
+            for element in meeleolu_sonastik[voti]:
+                if gramm in element:
+                    valede_tweetide_grammid.append(gramm)
+    return valede_tweetide_grammid
 
 
-'''Järgnev asi suht katsetus, seda peab veel vaatama.'''
-
-print('pole veel eemaldanud')
-a = 0
-for i in range(len(positiivsed_sonestatud_dev)):
-    määratud = (tweetide_väärtused(positiivsed_sonestatud_dev, i))
-    if määratud != 'positiivne': a+=1
-    print (määratud)
-print('valesid arvamisi:',a)
-
-eemaldamine(positiivsed_sonestatud_dev,positiivsed_kaaludega)
-
-print('peaks nüüd rohkem positiivseid olema, 1 kord eemaldatud')
-a = 0
-for i in range(len(positiivsed_sonestatud_dev)):
-    määratud = (tweetide_väärtused(positiivsed_sonestatud_dev, i))
-    if määratud != 'positiivne': a+=1
-    print (määratud)
-print('valesid arvamisi:',a)
-eemaldamine(positiivsed_sonestatud_dev,positiivsed_kaaludega)
-print('peaks nüüd rohkem positiivseid olema, 2 kord')
-a = 0
-for i in range(len(positiivsed_sonestatud_dev)):
-    määratud = (tweetide_väärtused(positiivsed_sonestatud_dev, i))
-    if määratud != 'positiivne': a+=1
-    print (määratud)
-eemaldamine(positiivsed_sonestatud_dev,positiivsed_kaaludega)
-print('valesid arvamisi:',a)
-print('peaks nüüd rohkem positiivseid olema, 3 kord')
-a = 0
-
-for i in range(len(positiivsed_sonestatud_dev)):
-    määratud = (tweetide_väärtused(positiivsed_sonestatud_dev, i))
-    if määratud != 'positiivne': a+=1
-    print (määratud)
-eemaldamine(positiivsed_sonestatud_dev,positiivsed_kaaludega)
-print('valesid arvamisi:',a)
-print('peaks nüüd rohkem positiivseid olema, 4 kord')
-a = 0
-
-for i in range(len(positiivsed_sonestatud_dev)):
-    määratud = (tweetide_väärtused(positiivsed_sonestatud_dev, i))
-    if määratud != 'positiivne': a+=1
-    print (määratud)
-eemaldamine(positiivsed_sonestatud_dev,positiivsed_kaaludega)
-print('valesid arvamisi:',a)
-
-print('peaks nüüd rohkem positiivseid olema, 5 kord')
-a = 0
-
-for i in range(len(positiivsed_sonestatud_dev)):
-    määratud = (tweetide_väärtused(positiivsed_sonestatud_dev, i))
-    if määratud != 'positiivne': a+=1
-    print (määratud)
-print('valesid arvamisi:',a)
-for i in range(5):
-    eemaldamine(positiivsed_sonestatud_dev, positiivsed_kaaludega)
-    print('peaks nüüd rohkem positiivseid olema')
-    a = 0
-    for i in range(len(positiivsed_sonestatud_dev)):
-        määratud = (tweetide_väärtused(positiivsed_sonestatud_dev, i))
-        if määratud != 'positiivne': a+=1
-        print (määratud)
-    print('valesti arvamisi:',a)
+print(valede_tweetide_eemaldamine(positiivsed_sonestatud_dev,valesti_tweedid,'positiivne',positiivsed))
+print(valede_tweetide_eemaldamine(positiivsed_sonestatud_dev,valesti_tweedid,'positiivne',negatiivsed))
+print(valede_tweetide_eemaldamine(positiivsed_sonestatud_dev,valesti_tweedid,'positiivne',neutraalsed))
+print(valede_tweetide_eemaldamine(positiivsed_sonestatud_dev,valesti_tweedid,'positiivne',irrelevant))
