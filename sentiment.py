@@ -53,10 +53,10 @@ def ngrammid(meeleolu_sonestatud):
     return yksgrammid, bigrammid, kolmgrammid, neligrammid
 def sonastikku(meeleolu_sonestatud):
     sonastik = defaultdict(list)
-    sonastik['yksgrammid'] = list(Counter(ngrammid(meeleolu_sonestatud)[0]).most_common(50))
-    sonastik['kaksgrammid'] = list(Counter(ngrammid(meeleolu_sonestatud)[1]).most_common(50))
-    sonastik['kolmgrammid'] = list(Counter(ngrammid(meeleolu_sonestatud)[2]).most_common(20))
-    sonastik['neligrammid'] = list(Counter(ngrammid(meeleolu_sonestatud)[3]).most_common(10))
+    sonastik['yksgrammid'] = list(Counter(ngrammid(meeleolu_sonestatud)[0]).most_common(80))
+    sonastik['kaksgrammid'] = list(Counter(ngrammid(meeleolu_sonestatud)[1]).most_common(80))
+    sonastik['kolmgrammid'] = list(Counter(ngrammid(meeleolu_sonestatud)[2]).most_common(40))
+    sonastik['neligrammid'] = list(Counter(ngrammid(meeleolu_sonestatud)[3]).most_common(30))
     return  sonastik
 def listiks (sagedustega_ennikud_meeleolu):
     sonastik = defaultdict(list)
@@ -191,7 +191,7 @@ def moju_suurendamine(õigesti_määratud_tweet,sonastik_grammidega):
             for b in sonastik_grammidega:
                 for c in sonastik_grammidega[b]:
                     if d in c:
-                        c[1] +=0.5
+                        c[1] +=1
     return sonastik_grammidega
 def valed_tweedid(meeleolu_sonastatud_dev, meeleolu):
     valesti_tweedid = []
@@ -203,50 +203,6 @@ def valed_tweedid(meeleolu_sonastatud_dev, meeleolu):
                 for i in range(len(a)):
                     valesti_tweedid.append(a[i])
     return valesti_tweedid
-
-treenimissonastik = tweedid_sonastikku('tweedid_segamini.txt')[0]
-devsonastik = tweedid_sonastikku('tweedid_segamini.txt')[1]
-testsonastik = tweedid_sonastikku('tweedid_segamini.txt')[2]
-
-positiivsed_sonestatud = (sonesta(treenimissonastik['positive']))
-negatiivsed_sonestatud = (sonesta(treenimissonastik['negative']))
-neutraalsed_sonestatud = (sonesta(treenimissonastik['neutral']))
-irrelevant_sonestatud = (sonesta(treenimissonastik['irrelevant']))
-
-positiivsed_sonestatud_dev = (sonesta(devsonastik['positive']))
-negatiivsed_sonestatud_dev = (sonesta(devsonastik['negative']))
-neutraalsed_sonestatud_dev = (sonesta(devsonastik['neutral']))
-irrelevant_sonestatud_dev = (sonesta(devsonastik['negative']))
-
-positiivsed_sagedused = listiks(sonastikku(positiivsed_sonestatud))
-negatiivsed_sagedused = listiks(sonastikku(negatiivsed_sonestatud))
-neutraalsed_sagedused = listiks(sonastikku(neutraalsed_sonestatud))
-irrelevant_sagedused = listiks(sonastikku(irrelevant_sonestatud))
-
-positiivsed_hulk = (sonastik_hulgaks(positiivsed_sagedused))
-negatiivsed_hulk = (sonastik_hulgaks(negatiivsed_sagedused))
-neutraalsed_hulk = (sonastik_hulgaks(neutraalsed_sagedused))
-irrelevant_hulk = (sonastik_hulgaks(irrelevant_sagedused))
-
-positiivsed = ((positiivsed_hulk -negatiivsed_hulk) - neutraalsed_hulk) - irrelevant_hulk
-negatiivsed = ((negatiivsed_hulk -positiivsed_hulk) - neutraalsed_hulk) - irrelevant_hulk
-neutraalsed = ((neutraalsed_hulk- negatiivsed_hulk)-positiivsed_hulk)- irrelevant_hulk
-irrelevant = ((irrelevant_hulk- negatiivsed_hulk)- positiivsed_hulk)- neutraalsed_hulk
-
-positiivsed = otsime_sagedused(positiivsed_sagedused,positiivsed)
-negatiivsed = otsime_sagedused(negatiivsed_sagedused,negatiivsed)
-neutraalsed = otsime_sagedused(neutraalsed_sagedused,neutraalsed)
-irrelevant = otsime_sagedused(irrelevant_sagedused, irrelevant)
-
-#positiivsed_kaaludega = sonastiku_muutmine(positiivsed)
-#negatiivsed_kaaludega = sonastiku_muutmine(negatiivsed)
-#neutraalse_kaaludega = sonastiku_muutmine(neutraalsed)
-#irrelevant_kaaludega = sonastiku_muutmine(irrelevant)
-
-positiivsed = kaalud(positiivsed)
-negatiivsed = kaalud(negatiivsed)
-neutraalsed = kaalud(neutraalsed)
-irrelevant = kaalud(irrelevant)
 
 def valede_tweetide_eemaldamine(meeleolu_sonestatud_dev, meeleolu, meeleolu_sonastik):
     all_tweets = valed_tweedid(meeleolu_sonestatud_dev,meeleolu)
@@ -298,23 +254,67 @@ def silumine(meeleolu_sonastatud_dev, meeleolu):
         eemaldamine(s,irrelevant)
     return meeleolu_sonastatud_dev
 
-def maaramine(meeleolu_sonastatud_dev, meeleolu):
-    for i in range(5):
-        a= 0
+def maaramine(meeleolu_sonastatud_dev, meeleolu,meeleolu_sonastik):
+    for i in range(10):
+        a=0
+        b=0
         for i in range(len(meeleolu_sonastatud_dev)):
             määratud = tweetide_väärtused(meeleolu_sonastatud_dev, i)
             if määratud != meeleolu and määratud != 'Meie parameetritega seda lauset kahjuks määrata ei saa.':
                 a +=1
-        print('Valesti, ',a, 'väljaarvatud need, mida ei oska ta määrata')
+            if määratud == meeleolu:
+                b +=1
+                moju_suurendamine(meeleolu_sonastatud_dev[i],meeleolu_sonastik)
+        print('Valesti',a, 'väljaarvatud need, mida ei oska ta määrata ja määras õigesti',b)
         silumine(meeleolu_sonastatud_dev, meeleolu)
-print('positiivsed 5 korda silutud')
-maaramine(positiivsed_sonestatud_dev, 'positiivne')
-print('negatiivsed 5 korda silutud')
 
-maaramine(negatiivsed_sonestatud_dev, 'negatiivsed')
-print('neutraalsed 5 korda silutud')
+treenimissonastik = tweedid_sonastikku('tweedid_segamini.txt')[0]
+devsonastik = tweedid_sonastikku('tweedid_segamini.txt')[1]
+testsonastik = tweedid_sonastikku('tweedid_segamini.txt')[2]
 
-maaramine(neutraalsed_sonestatud_dev, 'neutraalsed')
-print('irrelevandid 5 korda silutud')
+positiivsed_sonestatud = (sonesta(treenimissonastik['positive']))
+negatiivsed_sonestatud = (sonesta(treenimissonastik['negative']))
+neutraalsed_sonestatud = (sonesta(treenimissonastik['neutral']))
+irrelevant_sonestatud = (sonesta(treenimissonastik['irrelevant']))
 
-maaramine(irrelevant_sonestatud_dev, 'irrelevant')
+positiivsed_sonestatud_dev = (sonesta(devsonastik['positive']))
+negatiivsed_sonestatud_dev = (sonesta(devsonastik['negative']))
+neutraalsed_sonestatud_dev = (sonesta(devsonastik['neutral']))
+irrelevant_sonestatud_dev = (sonesta(devsonastik['negative']))
+
+positiivsed_sagedused = listiks(sonastikku(positiivsed_sonestatud))
+negatiivsed_sagedused = listiks(sonastikku(negatiivsed_sonestatud))
+neutraalsed_sagedused = listiks(sonastikku(neutraalsed_sonestatud))
+irrelevant_sagedused = listiks(sonastikku(irrelevant_sonestatud))
+
+positiivsed_hulk = (sonastik_hulgaks(positiivsed_sagedused))
+negatiivsed_hulk = (sonastik_hulgaks(negatiivsed_sagedused))
+neutraalsed_hulk = (sonastik_hulgaks(neutraalsed_sagedused))
+irrelevant_hulk = (sonastik_hulgaks(irrelevant_sagedused))
+
+positiivsed = ((positiivsed_hulk -negatiivsed_hulk) - neutraalsed_hulk) - irrelevant_hulk
+negatiivsed = ((negatiivsed_hulk -positiivsed_hulk) - neutraalsed_hulk) - irrelevant_hulk
+neutraalsed = ((neutraalsed_hulk- negatiivsed_hulk)-positiivsed_hulk)- irrelevant_hulk
+irrelevant = ((irrelevant_hulk- negatiivsed_hulk)- positiivsed_hulk)- neutraalsed_hulk
+
+positiivsed = otsime_sagedused(positiivsed_sagedused,positiivsed)
+negatiivsed = otsime_sagedused(negatiivsed_sagedused,negatiivsed)
+neutraalsed = otsime_sagedused(neutraalsed_sagedused,neutraalsed)
+irrelevant = otsime_sagedused(irrelevant_sagedused, irrelevant)
+
+#positiivsed_kaaludega = sonastiku_muutmine(positiivsed)
+#negatiivsed_kaaludega = sonastiku_muutmine(negatiivsed)
+#neutraalse_kaaludega = sonastiku_muutmine(neutraalsed)
+#irrelevant_kaaludega = sonastiku_muutmine(irrelevant)
+
+positiivsed = kaalud(positiivsed)
+negatiivsed = kaalud(negatiivsed)
+neutraalsed = kaalud(neutraalsed)
+irrelevant = kaalud(irrelevant)
+
+
+maaramine(positiivsed_sonestatud_dev, 'positiivne', positiivsed)
+maaramine(negatiivsed_sonestatud_dev, 'negatiivne', negatiivsed)
+maaramine(neutraalsed_sonestatud_dev, 'neutraalne', neutraalsed)
+maaramine(irrelevant_sonestatud_dev, 'irrelevant', irrelevant)
+
